@@ -49,16 +49,9 @@ module.exports.signup_post = async (req, res, next) => {
   const { username, email, password } = req.body;
   try {
     const user = await User.create({ username, email, password });
-
     const token = createToken(user._id);
 
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      sameSite: "Lax",
-      maxAge: 3 * 24 * 60 * 60 * 1000,
-    });
-
-    res.status(201).json({ user: user._id });
+    res.status(201).json({ user: user._id, cookie: token });
   } catch (err) {
     // Pass the error to the next middleware or error handler
     const errors = handleErrors(err);
@@ -67,19 +60,18 @@ module.exports.signup_post = async (req, res, next) => {
 };
 
 module.exports.verifyAuth_get = async (req, res, next) => {
-  const token = req.cookies.jwt;
-
+  const token = req.query.jwt;
+  console.log("token", token);
   if (token) {
     jwt.verify(token, "gb secret", async (err, decodedToken) => {
       if (err) {
         console.log("error verifying token");
         console.log(err.message);
-        res.redirect("/");
-        res.status(400).json({ errors: "error verifying token" });
+        res.json({ errors: "error verifying token" });
       } else {
         console.log("decodedToken", decodedToken);
         let user = await User.findById(decodedToken.id);
-        res.status(200).json({ user });
+        res.json({ user });
       }
     });
   } else {
@@ -95,52 +87,37 @@ module.exports.login_post = async (req, res, next) => {
 
     const token = createToken(user._id);
 
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      sameSite: "Lax",
-      maxAge: 3 * 24 * 60 * 60 * 1000,
-    });
-
-    res.status(201).json({ user: user._id });
+    res.status(201).json({ user: user._id, cookie: token });
   } catch (err) {
     const errors = handleErrors(err);
     res.status(400).json({ errors });
   }
 };
 
-module.exports.logout_get = (req, res, next) => {
-  res.cookie("jwt", "", {
-    httpOnly: true,
-    sameSite: "Lax",
-    maxAge: 1,
-  });
-  res.json({ message: "logged out" });
+module.exports.updateBio_post = async (req, res, next) => {
+  const { bio, userId } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        bio: bio,
+      },
+      { new: true }
+    );
+
+    res.status(200).json({ bio: user.bio, message: "bio updated" });
+  } catch (err) {}
 };
 
-module.exports.Me = (req, res, next) => {
-  const token = req.cookies.jwt;
-
-  if (token) {
-    jwt.verify(token, "gb secret", async (err, decodedToken) => {
-      if (err) {
-        console.log("error verifying token");
-        console.log(err.message);
-        res.status(400).json({ errors: "error verifying token" });
-        res.redirect("/");
-      } else {
-        console.log("decodedToken", decodedToken);
-        const User = await User.findById(decodedToken.id);
-        const user = {
-          email: User.email,
-          username: User.username,
-          date: User.date,
-          id: User._id,
-        };
-        res.status(200).json({ user });
-      }
-    });
-  } else {
-    res.redirect("/");
-    res.status(400).json({ errors: "no token" });
-  }
+module.exports.Me = async (req, res, next) => {
+  const { userId } = req.body;
+  const main = await User.findById(userId);
+  const user = {
+    email: main.email,
+    username: main.username,
+    date: main.date,
+    id: main._id,
+    bio: main.bio,
+  };
+  res.json({ user });
 };

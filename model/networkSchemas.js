@@ -29,6 +29,14 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  bio: {
+    type: String,
+  },
+  drafts: [
+    {
+      post: String,
+    },
+  ],
   //stores recent chats
   recentChats: {
     type: Array,
@@ -64,11 +72,13 @@ const userSchema = new Schema({
 // Define Document schema
 const chatSchema = new mongoose.Schema({
   _id: String,
-  title: {
-    type: String,
-    required: true,
-  },
-  chatPeople: [
+  chatPeopleName: [
+    {
+      user1Name: String,
+      user2Name: String,
+    },
+  ],
+  chatPeopleId: [
     {
       user1Id: String,
       user2Id: String,
@@ -94,10 +104,35 @@ const chatSchema = new mongoose.Schema({
   },
 });
 
+const postSchema = new mongoose.Schema({
+  _id: String,
+  userId: String,
+  username: String,
+  post: String,
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+  likes: {
+    type: Array,
+  },
+  noOfLikes: Number,
+  comments: [
+    {
+      userId: String,
+      username: String,
+      comment: String,
+      date: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
+});
+
 // Hash password before saving to database
 userSchema.pre("save", async function (next) {
   // console.log("user about to be created", this);
-
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
 
@@ -120,7 +155,10 @@ userSchema.statics.login = async function (email, password) {
 // Create User model from User schema
 const User = mongoose.model("User", userSchema);
 
-// Create Document model from Document schema
+// Create Document model from chatSchema
 const chatDocument = mongoose.model("chatDocument", chatSchema);
 
-module.exports = { User, chatDocument };
+// Create Document model from postSchema
+const postDocument = mongoose.model("postDocument", postSchema);
+
+module.exports = { User, chatDocument, postDocument };

@@ -1,5 +1,8 @@
 const express = require("express");
 const authController = require("./controller/authController");
+const chatController = require("./controller/chatController");
+const userController = require("./controller/userController");
+const news = require("./controller/news");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -31,9 +34,20 @@ app.get("/", (req, res) => {
 // auths
 app.post("/signup", authController.signup_post);
 app.get("/verifyAuth", authController.verifyAuth_get);
-app.get("/me", authController.Me);
+app.post("/me", authController.Me);
 app.post("/login", authController.login_post);
-app.get("/logout", authController.logout_get);
+app.post("/updateBio", authController.updateBio_post);
+
+// users
+app.post("/search", userController.search);
+app.post("/draft", userController.draft);
+app.post("/getDraft", userController.getDraft);
+app.post("/deleteDraft", userController.deleteDraft);
+
+// chat
+
+// news
+app.get("/getHeadlines", news.getHeadlines);
 
 // mongoose
 const dbURI =
