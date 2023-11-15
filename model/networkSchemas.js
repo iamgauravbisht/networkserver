@@ -108,6 +108,7 @@ const postSchema = new mongoose.Schema({
   _id: String,
   userId: String,
   username: String,
+  venue: String,
   post: String,
   date: {
     type: Date,

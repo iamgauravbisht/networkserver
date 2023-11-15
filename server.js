@@ -1,6 +1,7 @@
 const express = require("express");
 const authController = require("./controller/authController");
 const chatController = require("./controller/chatController");
+const postController = require("./controller/postController");
 const userController = require("./controller/userController");
 const news = require("./controller/news");
 const mongoose = require("mongoose");
@@ -43,6 +44,8 @@ app.post("/search", userController.search);
 app.post("/draft", userController.draft);
 app.post("/getDraft", userController.getDraft);
 app.post("/deleteDraft", userController.deleteDraft);
+app.post("/createPost", postController.createPost);
+app.post("/getPosts", postController.getPosts);
 
 // chat
 
