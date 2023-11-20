@@ -41,6 +41,13 @@ app.post("/updateBio", authController.updateBio_post);
 
 // users
 app.post("/search", userController.search);
+app.post("/sendFriendRequest", userController.sendFreindRequest);
+app.post("/sentFriendRequests", userController.sentFriendRequests);
+app.post("/friends", userController.allFriends);
+app.post("/recievedFriendRequests", userController.recievedFriendRequestst);
+app.post("/acceptFriendRequest", userController.acceptFriendRequest);
+app.post("/rejectFriendRequest", userController.rejectFriendRequest);
+
 app.post("/draft", userController.draft);
 app.post("/getDraft", userController.getDraft);
 app.post("/deleteDraft", userController.deleteDraft);

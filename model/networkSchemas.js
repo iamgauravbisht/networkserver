@@ -46,19 +46,11 @@ const userSchema = new Schema({
     type: Array,
   },
   //stores friends Userids
-  friends: {
-    type: Array,
-  },
-  //stores friend requests received
-  friendRequestsReceived: [
+  friends: [],
+  friendsStatus: [
     {
-      type: String,
-    },
-  ],
-  //stores friend requests sent
-  friendRequestsSent: [
-    {
-      type: String,
+      userIdOfSender: String,
+      statusOfRequest: String,
     },
   ],
   //stores blocked users
@@ -162,4 +154,8 @@ const chatDocument = mongoose.model("chatDocument", chatSchema);
 // Create Document model from postSchema
 const postDocument = mongoose.model("postDocument", postSchema);
 
-module.exports = { User, chatDocument, postDocument };
+module.exports = {
+  User,
+  chatDocument,
+  postDocument,
+};
