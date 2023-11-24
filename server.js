@@ -7,7 +7,7 @@ const news = require("./controller/news");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-// const { chatDocument, User } = require("./model/model");
+const socket = require("socket.io");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -38,6 +38,7 @@ app.get("/verifyAuth", authController.verifyAuth_get);
 app.post("/me", authController.Me);
 app.post("/login", authController.login_post);
 app.post("/updateBio", authController.updateBio_post);
+app.post("/bio", authController.bio);
 
 // users
 app.post("/search", userController.search);
@@ -53,8 +54,6 @@ app.post("/getDraft", userController.getDraft);
 app.post("/deleteDraft", userController.deleteDraft);
 app.post("/createPost", postController.createPost);
 app.post("/getPosts", postController.getPosts);
-
-// chat
 
 // news
 app.get("/getHeadlines", news.getHeadlines);
@@ -75,3 +74,32 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+// socket
+const io = socket(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+  },
+});
+io.on("connection", (socket) => {
+  socket.on("getChat", async (chatDocument) => {
+    const chat = await chatController.getChat(chatDocument);
+    socket.join(chat._id.toString());
+    socket.emit("loadChat", chat.arrayOfChat);
+
+    socket.on("sendMessage", async (messageObject) => {
+      // save message to db
+      const chat = await chatController.saveChat({
+        user1: chatDocument.user1,
+        user2: chatDocument.user2,
+        message: messageObject,
+      });
+      if (chat) {
+        socket.broadcast
+          .to(chat._id.toString())
+          .emit("receiveMessage", messageObject);
+      }
+    });
+  });
+});

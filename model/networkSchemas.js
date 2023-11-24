@@ -63,23 +63,12 @@ const userSchema = new Schema({
 
 // Define Document schema
 const chatSchema = new mongoose.Schema({
-  _id: String,
-  chatPeopleName: [
+  user1Id: String,
+  user2Id: String,
+  arrayOfChat: [
     {
-      user1Name: String,
-      user2Name: String,
-    },
-  ],
-  chatPeopleId: [
-    {
-      user1Id: String,
-      user2Id: String,
-    },
-  ],
-  messages: [
-    {
-      senderId: String,
-      message: String,
+      userId: String,
+      text: String,
       date: {
         type: Date,
         default: Date.now,
@@ -89,10 +78,6 @@ const chatSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now,
-  },
-  delta: {
-    type: mongoose.Schema.Types.Mixed,
-    default: "",
   },
 });
 

@@ -108,6 +108,15 @@ module.exports.updateBio_post = async (req, res, next) => {
     res.status(200).json({ bio: user.bio, message: "bio updated" });
   } catch (err) {}
 };
+module.exports.bio = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const user = await User.findById(userId);
+    res.status(200).json({ bio: user.bio });
+  } catch (err) {
+    res.status(500).json({ message: "server error" });
+  }
+};
 
 module.exports.Me = async (req, res, next) => {
   const { userId } = req.body;
