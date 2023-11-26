@@ -54,6 +54,10 @@ app.post("/getDraft", userController.getDraft);
 app.post("/deleteDraft", userController.deleteDraft);
 app.post("/createPost", postController.createPost);
 app.post("/getPosts", postController.getPosts);
+app.post("/likepost", postController.likePost);
+app.post("/unlikepost", postController.unlikePost);
+app.post("/postcomment", postController.postComment);
+app.post("/getComment", postController.getComments);
 
 // news
 app.get("/getHeadlines", news.getHeadlines);
