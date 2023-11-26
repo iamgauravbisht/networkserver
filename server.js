@@ -12,11 +12,22 @@ const socket = require("socket.io");
 const app = express();
 const port = process.env.PORT || 3000;
 
+const allowedOrigins = [
+  "https://iamgauravbisht.github.io",
+  "https://iamgauravbisht.github.io/Network/",
+  "https://tangerine-malabi-6f2a2a.netlify.app/",
+];
 const corsOptions = {
-  origin: "https://iamgauravbisht.github.io",
-  credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: "Content-Type, Authorization",
 };
 
 // Middleware
@@ -82,7 +93,10 @@ mongoose
 // socket
 const io = socket(server, {
   cors: {
-    origin: "https://iamgauravbisht.github.io",
+    origin: [
+      "https://iamgauravbisht.github.io",
+      "https://tangerine-malabi-6f2a2a.netlify.app/",
+    ],
     methods: ["GET", "POST"],
   },
 });
