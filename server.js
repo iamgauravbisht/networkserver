@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000;
 const allowedOrigins = [
   "https://iamgauravbisht.github.io",
   "https://iamgauravbisht.github.io/Network/",
-  "https://tangerine-malabi-6f2a2a.netlify.app/",
+  "https://tangerine-malabi-6f2a2a.netlify.app",
 ];
 const corsOptions = {
   origin: function (origin, callback) {
@@ -95,7 +95,7 @@ const io = socket(server, {
   cors: {
     origin: [
       "https://iamgauravbisht.github.io",
-      "https://tangerine-malabi-6f2a2a.netlify.app/",
+      "https://tangerine-malabi-6f2a2a.netlify.app",
     ],
     methods: ["GET", "POST"],
   },
